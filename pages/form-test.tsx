@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import { useRef, FormEventHandler } from 'react'
 
 type RenderProps = {
   handleChange: (...a: any[]) => any;
@@ -9,8 +10,25 @@ type RenderProps = {
 const FormTest: NextPage = () => {
   const name = 'some-form-name';
   const honeypotName = 'bot-field';
+  const formRef = useRef<HTMLFormElement>(null)
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
+    const { current: form } = formRef;
+    if (!form) return;
+    evt.preventDefault();
+
+    let formData = new FormData(form);
+    fetch(form.action || '/', {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(formData as any).toString(),
+    })
+      .then(() => console.log("Form successfully submitted"))
+      .catch((error) => alert(error));
+  }
+
   return (
-    <form name={name} method="post" data-netlify>
+    <form ref={formRef} name={name} onSubmit={handleSubmit} data-netlify>
       <input type="hidden" value={name} name="form-name" />
       <p hidden>
         <input type="text" name={honeypotName} />
