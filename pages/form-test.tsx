@@ -28,7 +28,13 @@ const FormTest: NextPage = () => {
   }
 
   return (
-    <form ref={formRef} name={name} onSubmit={handleSubmit} data-netlify>
+    <form
+      ref={formRef}
+      name={name}
+      onSubmit={handleSubmit}
+      data-netlify
+      data-netlify-honeypot={honeypotName}
+    >
       <input type="hidden" value={name} name="form-name" />
       <p hidden>
         <input type="text" name={honeypotName} />
